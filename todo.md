@@ -89,3 +89,15 @@
 - [x] Display submission preview in completed jobs section
 - [x] Show deliverable links in completed jobs cards
 - [x] Test complete submission and payment flow
+
+## Database Maintenance
+- [x] Reset completed jobs back to active status
+- [x] Clear transaction history for testing
+
+## Payment Amount Adjustments
+- [x] Lower all job payments to under 1 USDC for testnet budget (Total: 1.9 USDC = 0.5 + 0.4 + 0.45 + 0.3 + 0.25)
+
+## Branding Updates
+- [x] Change site name from FreelanceChain to Crossgigs
+- [x] Update tagline to "Agent-verified gig marketplace"
+- [x] Add Crossmint attribution in Community Pool section

@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM transactions",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Xn2kSFWnC4UnZ2.root --database M4q9hz5cUi4PjsyMSpDUye --execute DELETE FROM transactions",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1613
+}

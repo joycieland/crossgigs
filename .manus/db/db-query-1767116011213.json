@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE jobs SET paymentAmount = CASE \n  WHEN title LIKE '%Logo%' THEN '0.5'\n  WHEN title LIKE '%Landing Page%' THEN '0.4'\n  WHEN title LIKE '%Smart Contract%' THEN '0.45'\n  WHEN title LIKE '%Social Media%' THEN '0.3'\n  WHEN title LIKE '%Documentation%' THEN '0.25'\n  ELSE '0.3'\nEND WHERE status = 'active'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Xn2kSFWnC4UnZ2.root --database M4q9hz5cUi4PjsyMSpDUye --execute UPDATE jobs SET paymentAmount = CASE \n  WHEN title LIKE '%Logo%' THEN '0.5'\n  WHEN title LIKE '%Landing Page%' THEN '0.4'\n  WHEN title LIKE '%Smart Contract%' THEN '0.45'\n  WHEN title LIKE '%Social Media%' THEN '0.3'\n  WHEN title LIKE '%Documentation%' THEN '0.25'\n  ELSE '0.3'\nEND WHERE status = 'active'",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1506
+}

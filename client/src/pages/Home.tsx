@@ -93,9 +93,9 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                FreelanceChain
+                Crossgigs
               </h1>
-              <p className="text-sm text-muted-foreground mt-1">Blockchain-powered gig marketplace</p>
+              <p className="text-sm text-muted-foreground mt-1">Agent-verified gig marketplace</p>
             </div>
           </div>
         </div>
@@ -112,6 +112,7 @@ export default function Home() {
               <div>
                 <CardTitle className="text-2xl">Community Pool</CardTitle>
                 <CardDescription>Agent wallet funding available gigs</CardDescription>
+            <p className="text-xs text-muted-foreground mt-1">Powered by Crossmint</p>
               </div>
             </div>
           </CardHeader>
