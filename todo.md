@@ -62,3 +62,8 @@
 - [x] Implement dynamic balance refresh after USDC transfer
 - [x] Invalidate wallet query cache to trigger balance update
 - [x] Show updated balance immediately after payment
+
+## Transaction Verification
+- [x] Make transaction hash clickable in success toast
+- [x] Link to BaseScan explorer (https://sepolia.basescan.org/tx/[hash])
+- [x] Make transaction hash clickable in completed jobs section

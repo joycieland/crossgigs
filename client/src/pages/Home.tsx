@@ -27,8 +27,19 @@ export default function Home() {
 
   const completeJobMutation = trpc.jobs.complete.useMutation({
     onSuccess: (data) => {
+      const explorerUrl = `https://sepolia.basescan.org/tx/${data.transactionHash}`;
       toast.success("Payment sent successfully!", {
-        description: `Transaction: ${data.transactionHash.slice(0, 10)}...`,
+        description: (
+          <a 
+            href={explorerUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="underline hover:text-primary flex items-center gap-1"
+          >
+            View transaction: {data.transactionHash.slice(0, 10)}...
+            <ExternalLink className="h-3 w-3" />
+          </a>
+        ),
       });
       setIsDialogOpen(false);
       setWalletAddress("");
@@ -204,6 +215,7 @@ export default function Home() {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {completedJobs.map((job) => {
                 const skills = JSON.parse(job.requiredSkills) as string[];
+                const jobWithTx = job as typeof job & { transactionHash?: string | null };
                 return (
                   <Card key={job.id} className="flex flex-col opacity-75 border-border/50">
                     <CardHeader>
@@ -230,9 +242,25 @@ export default function Home() {
                         ))}
                       </div>
                       {job.completedBy && (
-                        <div className="text-xs text-muted-foreground">
-                          <p className="font-medium mb-1">Paid to:</p>
-                          <p className="font-mono break-all">{job.completedBy}</p>
+                        <div className="text-xs text-muted-foreground space-y-2">
+                          <div>
+                            <p className="font-medium mb-1">Paid to:</p>
+                            <p className="font-mono break-all">{job.completedBy}</p>
+                          </div>
+                          {jobWithTx.transactionHash && (
+                            <div>
+                              <p className="font-medium mb-1">Transaction:</p>
+                              <a
+                                href={`https://sepolia.basescan.org/tx/${jobWithTx.transactionHash}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-mono text-primary hover:underline flex items-center gap-1 break-all"
+                              >
+                                {jobWithTx.transactionHash.slice(0, 10)}...{jobWithTx.transactionHash.slice(-8)}
+                                <ExternalLink className="h-3 w-3 flex-shrink-0" />
+                              </a>
+                            </div>
+                          )}
                         </div>
                       )}
                     </CardContent>

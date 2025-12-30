@@ -105,6 +105,31 @@ export async function getJobsByStatus(status: "active" | "completed") {
     console.warn("[Database] Cannot get jobs: database not available");
     return [];
   }
+  
+  // For completed jobs, join with transactions to get transaction hash
+  if (status === "completed") {
+    const results = await db
+      .select({
+        id: jobs.id,
+        title: jobs.title,
+        description: jobs.description,
+        category: jobs.category,
+        requiredSkills: jobs.requiredSkills,
+        paymentAmount: jobs.paymentAmount,
+        status: jobs.status,
+        completedBy: jobs.completedBy,
+        completedAt: jobs.completedAt,
+        createdAt: jobs.createdAt,
+        updatedAt: jobs.updatedAt,
+        transactionHash: transactions.transactionHash,
+      })
+      .from(jobs)
+      .leftJoin(transactions, eq(jobs.id, transactions.jobId))
+      .where(eq(jobs.status, status))
+      .orderBy(desc(jobs.createdAt));
+    return results;
+  }
+  
   return await db.select().from(jobs).where(eq(jobs.status, status)).orderBy(desc(jobs.createdAt));
 }
 
