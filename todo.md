@@ -73,3 +73,19 @@
 - [x] Debug Crossmint API integration issue
 - [x] Ensure wallet creation works with staging API key
 - [x] Implement GET before POST pattern to avoid duplicate wallet creation errors
+
+## Transaction Hash Bug
+- [x] Fix incorrect transaction hash being displayed
+- [x] Verify Crossmint API response structure for transaction hash
+- [x] Ensure correct hash field is extracted and stored in database (polling for txId)
+- [ ] Test that displayed hash matches actual blockchain transaction
+
+## Proof of Work Submission Feature
+- [x] Add submission fields to jobs table (submissionUrl, submissionDescription, submissionFiles)
+- [x] Update database schema and push migrations
+- [x] Update backend to handle submission data
+- [x] Replace "Mark as Done" with "Submit Work" button
+- [x] Create submission dialog with link input and description
+- [x] Display submission preview in completed jobs section
+- [x] Show deliverable links in completed jobs cards
+- [x] Test complete submission and payment flow

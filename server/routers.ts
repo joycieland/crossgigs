@@ -34,6 +34,8 @@ export const appRouter = router({
         z.object({
           jobId: z.number(),
           walletAddress: z.string(),
+          submissionUrl: z.string().optional(),
+          submissionDescription: z.string().optional(),
         })
       )
       .mutation(async ({ input }) => {
@@ -62,8 +64,11 @@ export const appRouter = router({
           job.paymentAmount
         );
 
-        // Mark job as completed
-        await db.completeJob(input.jobId, input.walletAddress);
+        // Mark job as completed with submission data
+        await db.completeJob(input.jobId, input.walletAddress, {
+          submissionUrl: input.submissionUrl,
+          submissionDescription: input.submissionDescription,
+        });
 
         // Record transaction
         await db.createTransaction({

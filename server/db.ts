@@ -118,6 +118,9 @@ export async function getJobsByStatus(status: "active" | "completed") {
         paymentAmount: jobs.paymentAmount,
         status: jobs.status,
         completedBy: jobs.completedBy,
+        submissionUrl: jobs.submissionUrl,
+        submissionDescription: jobs.submissionDescription,
+        submissionFiles: jobs.submissionFiles,
         completedAt: jobs.completedAt,
         createdAt: jobs.createdAt,
         updatedAt: jobs.updatedAt,
@@ -153,7 +156,15 @@ export async function createJob(job: InsertJob) {
   return true;
 }
 
-export async function completeJob(jobId: number, walletAddress: string) {
+export async function completeJob(
+  jobId: number,
+  walletAddress: string,
+  submissionData?: {
+    submissionUrl?: string;
+    submissionDescription?: string;
+    submissionFiles?: string[];
+  }
+) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot complete job: database not available");
@@ -163,6 +174,9 @@ export async function completeJob(jobId: number, walletAddress: string) {
     .set({ 
       status: "completed", 
       completedBy: walletAddress,
+      submissionUrl: submissionData?.submissionUrl || null,
+      submissionDescription: submissionData?.submissionDescription || null,
+      submissionFiles: submissionData?.submissionFiles ? JSON.stringify(submissionData.submissionFiles) : null,
       completedAt: new Date()
     })
     .where(eq(jobs.id, jobId));

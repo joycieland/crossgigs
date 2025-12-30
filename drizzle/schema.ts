@@ -34,6 +34,9 @@ export const jobs = mysqlTable("jobs", {
   paymentAmount: varchar("paymentAmount", { length: 50 }).notNull(), // USDC amount as string to preserve precision
   status: mysqlEnum("status", ["active", "completed"]).default("active").notNull(),
   completedBy: varchar("completedBy", { length: 255 }), // Wallet address of freelancer
+  submissionUrl: text("submissionUrl"), // Link to deliverable (GitHub, Figma, deployed site, etc.)
+  submissionDescription: text("submissionDescription"), // Brief description of what was delivered
+  submissionFiles: text("submissionFiles"), // JSON array of S3 file URLs
   completedAt: timestamp("completedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

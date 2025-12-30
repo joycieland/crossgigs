@@ -15,6 +15,13 @@
       "when": 1767111308669,
       "tag": "0001_sturdy_phantom_reporter",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1767114557899,
+      "tag": "0002_soft_apocalypse",
+      "breakpoints": true
     }
   ]
 }

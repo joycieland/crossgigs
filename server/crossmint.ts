@@ -200,8 +200,53 @@ export async function transferUSDC(
     );
 
     // The response contains transaction details
-    const txHash = response.data.onChain?.txId || response.data.onChain?.userOperationHash;
+    console.log("[Crossmint] Transfer response:", JSON.stringify(response.data, null, 2));
+    
+    const transferId = response.data.id;
+    const transferWalletLocator = `email:${fromEmail}:evm`;
+    
+    // Poll for the actual transaction hash (txId)
+    // The initial response may only have userOperationHash, but txId appears after confirmation
+    let txHash = response.data.onChain?.txId;
+    let attempts = 0;
+    const maxAttempts = 30; // Wait up to 30 seconds
+    
+    while (!txHash && attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+      attempts++;
+      
+      try {
+        // Fetch the transfer status to get the updated txId
+        const statusResponse = await axios.get(
+          `${CROSSMINT_API_URL}/wallets/${encodeURIComponent(transferWalletLocator)}/transfers/${transferId}`,
+          {
+            headers: {
+              "X-API-KEY": API_KEY,
+            },
+          }
+        );
+        
+        txHash = statusResponse.data.onChain?.txId;
+        console.log(`[Crossmint] Poll attempt ${attempts}: txId =`, txHash);
+        
+        if (txHash) {
+          break;
+        }
+      } catch (pollError: any) {
+        console.warn(`[Crossmint] Error polling transfer status:`, pollError.response?.data || pollError.message);
+      }
+    }
+    
+    // Fallback to userOperationHash if txId never appears (shouldn't happen in normal cases)
+    if (!txHash) {
+      console.warn("[Crossmint] Could not get txId after polling, using userOperationHash as fallback");
+      txHash = response.data.onChain?.userOperationHash;
+    }
+    
     const explorerLink = response.data.onChain?.explorerLink || `https://sepolia.basescan.org/tx/${txHash}`;
+
+    console.log("[Crossmint] Final txHash:", txHash);
+    console.log("[Crossmint] Explorer link:", explorerLink);
 
     return {
       hash: txHash || "pending",

@@ -19,6 +19,8 @@ import { toast } from "sonner";
 export default function Home() {
   const [selectedJob, setSelectedJob] = useState<number | null>(null);
   const [walletAddress, setWalletAddress] = useState("");
+  const [submissionUrl, setSubmissionUrl] = useState("");
+  const [submissionDescription, setSubmissionDescription] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data: activeJobs, isLoading: jobsLoading, refetch: refetchJobs } = trpc.jobs.getByStatus.useQuery({ status: "active" });
@@ -43,6 +45,8 @@ export default function Home() {
       });
       setIsDialogOpen(false);
       setWalletAddress("");
+      setSubmissionUrl("");
+      setSubmissionDescription("");
       setSelectedJob(null);
       refetchJobs();
       refetchCompleted();
@@ -74,6 +78,8 @@ export default function Home() {
     completeJobMutation.mutate({
       jobId: selectedJob,
       walletAddress: walletAddress,
+      submissionUrl: submissionUrl || undefined,
+      submissionDescription: submissionDescription || undefined,
     });
   };
 
@@ -185,9 +191,9 @@ export default function Home() {
                       <Button
                         onClick={() => handleDoneClick(job.id)}
                         className="w-full"
-                        size="lg"
+                        variant="default"
                       >
-                        Mark as Done
+                        Submit Work
                       </Button>
                     </CardFooter>
                   </Card>
@@ -243,6 +249,25 @@ export default function Home() {
                       </div>
                       {job.completedBy && (
                         <div className="text-xs text-muted-foreground space-y-2">
+                          {(job as any).submissionUrl && (
+                            <div className="mb-3 p-3 rounded-md bg-accent/30 border border-border/50">
+                              <p className="font-medium mb-2 text-foreground">📦 Deliverable:</p>
+                              <a
+                                href={(job as any).submissionUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline flex items-center gap-1 break-all text-xs"
+                              >
+                                {(job as any).submissionUrl}
+                                <ExternalLink className="h-3 w-3 flex-shrink-0" />
+                              </a>
+                              {(job as any).submissionDescription && (
+                                <p className="mt-2 text-xs text-muted-foreground italic">
+                                  "{(job as any).submissionDescription}"
+                                </p>
+                              )}
+                            </div>
+                          )}
                           <div>
                             <p className="font-medium mb-1">Paid to:</p>
                             <p className="font-mono break-all">{job.completedBy}</p>
@@ -282,9 +307,9 @@ export default function Home() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Complete Job & Receive Payment</DialogTitle>
+            <DialogTitle>Submit Work & Receive Payment</DialogTitle>
             <DialogDescription>
-              Enter your wallet address to receive {selectedJobData?.paymentAmount} USDC on base-sepolia
+              Provide your deliverable details and wallet address to receive {selectedJobData?.paymentAmount} USDC
             </DialogDescription>
           </DialogHeader>
           
@@ -298,18 +323,48 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="wallet">Your Wallet Address</Label>
-                <Input
-                  id="wallet"
-                  placeholder="0x..."
-                  value={walletAddress}
-                  onChange={(e) => setWalletAddress(e.target.value)}
-                  className="font-mono text-sm"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Enter your Ethereum wallet address to receive payment
-                </p>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="deliverable">Deliverable Link</Label>
+                  <Input
+                    id="deliverable"
+                    placeholder="https://github.com/user/repo or https://figma.com/..."
+                    value={submissionUrl}
+                    onChange={(e) => setSubmissionUrl(e.target.value)}
+                    className="text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Link to your work (GitHub repo, deployed site, Figma design, etc.)
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Brief Description</Label>
+                  <textarea
+                    id="description"
+                    placeholder="Describe what you delivered..."
+                    value={submissionDescription}
+                    onChange={(e) => setSubmissionDescription(e.target.value)}
+                    className="w-full min-h-[80px] px-3 py-2 text-sm rounded-md border border-input bg-background"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Brief explanation of your work
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="wallet">Your Wallet Address</Label>
+                  <Input
+                    id="wallet"
+                    placeholder="0x..."
+                    value={walletAddress}
+                    onChange={(e) => setWalletAddress(e.target.value)}
+                    className="font-mono text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Enter your Ethereum wallet address to receive payment
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -320,6 +375,8 @@ export default function Home() {
               onClick={() => {
                 setIsDialogOpen(false);
                 setWalletAddress("");
+                setSubmissionUrl("");
+                setSubmissionDescription("");
                 setSelectedJob(null);
               }}
               disabled={completeJobMutation.isPending}
@@ -328,7 +385,7 @@ export default function Home() {
             </Button>
             <Button
               onClick={handleConfirmPayment}
-              disabled={!walletAddress || completeJobMutation.isPending}
+              disabled={!walletAddress || !submissionUrl || completeJobMutation.isPending}
             >
               {completeJobMutation.isPending ? (
                 <>
