@@ -44,4 +44,11 @@
 - [x] Test complete job flow end-to-end
 - [ ] Verify USDC transfers on base-sepolia (requires API key)
 - [x] Test error scenarios (insufficient balance, invalid address)
-- [ ] Create final checkpoint for deployment
+- [x] Create final checkpoint for deployment
+
+## Bug Fixes
+- [x] Fix Crossmint wallet creation API error
+- [x] Update API endpoint and authentication method
+- [x] Test wallet creation with correct credentials
+- [x] Fix staging vs production API URL detection
+- [x] Fix email address validation for wallet owner

@@ -51,13 +51,13 @@ export const appRouter = router({
           throw new Error("Job already completed");
         }
 
-        // Get agent wallet (using owner email from env)
-        const agentEmail = process.env.OWNER_NAME || "joyce@paella.dev";
+        // Get agent wallet (using owner email)
+        const agentEmail = "joyce@paella.dev";
         const agentWallet = await crossmint.getOrCreateWallet(agentEmail);
 
         // Transfer USDC
         const transferResult = await crossmint.transferUSDC(
-          agentWallet.address,
+          agentEmail,
           input.walletAddress,
           job.paymentAmount
         );
@@ -86,9 +86,10 @@ export const appRouter = router({
 
   wallet: router({
     getAgentWallet: publicProcedure.query(async () => {
-      const agentEmail = process.env.OWNER_NAME || "joyce@paella.dev";
+      // Use a valid email address for the agent wallet
+      const agentEmail = "joyce@paella.dev";
       const wallet = await crossmint.getOrCreateWallet(agentEmail);
-      const balance = await crossmint.getWalletBalance(wallet.address);
+      const balance = await crossmint.getWalletBalance(agentEmail);
 
       return {
         address: wallet.address,
