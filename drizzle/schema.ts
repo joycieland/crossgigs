@@ -25,4 +25,34 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+export const jobs = mysqlTable("jobs", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  category: varchar("category", { length: 100 }).notNull(),
+  requiredSkills: text("requiredSkills").notNull(), // JSON array stored as text
+  paymentAmount: varchar("paymentAmount", { length: 50 }).notNull(), // USDC amount as string to preserve precision
+  status: mysqlEnum("status", ["active", "completed"]).default("active").notNull(),
+  completedBy: varchar("completedBy", { length: 255 }), // Wallet address of freelancer
+  completedAt: timestamp("completedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Job = typeof jobs.$inferSelect;
+export type InsertJob = typeof jobs.$inferInsert;
+
+export const transactions = mysqlTable("transactions", {
+  id: int("id").autoincrement().primaryKey(),
+  jobId: int("jobId").notNull(),
+  fromAddress: varchar("fromAddress", { length: 255 }).notNull(), // Agent wallet address
+  toAddress: varchar("toAddress", { length: 255 }).notNull(), // Freelancer wallet address
+  amount: varchar("amount", { length: 50 }).notNull(), // USDC amount
+  transactionHash: varchar("transactionHash", { length: 255 }).notNull(),
+  explorerLink: text("explorerLink"), // Link to block explorer
+  status: mysqlEnum("status", ["pending", "completed", "failed"]).default("pending").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Transaction = typeof transactions.$inferSelect;
+export type InsertTransaction = typeof transactions.$inferInsert;

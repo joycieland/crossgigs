@@ -43,16 +43,17 @@
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
+  /* Elegant purple theme */
+  --primary: oklch(0.58 0.24 285); /* Rich purple */
+  --primary-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(0.58 0.24 285);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --chart-1: oklch(0.7 0.2 285);
+  --chart-2: oklch(0.6 0.22 285);
+  --chart-3: oklch(0.5 0.24 285);
+  --chart-4: oklch(0.45 0.24 285);
+  --chart-5: oklch(0.4 0.22 285);
+  --radius: 0.75rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.235 0.015 65);
   --card: oklch(1 0 0);

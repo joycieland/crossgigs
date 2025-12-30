@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, jobs, InsertJob, transactions, InsertTransaction } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,77 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Job queries
+export async function getAllJobs() {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get jobs: database not available");
+    return [];
+  }
+  return await db.select().from(jobs).orderBy(desc(jobs.createdAt));
+}
+
+export async function getJobsByStatus(status: "active" | "completed") {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get jobs: database not available");
+    return [];
+  }
+  return await db.select().from(jobs).where(eq(jobs.status, status)).orderBy(desc(jobs.createdAt));
+}
+
+export async function getJobById(id: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get job: database not available");
+    return undefined;
+  }
+  const result = await db.select().from(jobs).where(eq(jobs.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createJob(job: InsertJob) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create job: database not available");
+    return undefined;
+  }
+  await db.insert(jobs).values(job);
+  return true;
+}
+
+export async function completeJob(jobId: number, walletAddress: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot complete job: database not available");
+    return false;
+  }
+  await db.update(jobs)
+    .set({ 
+      status: "completed", 
+      completedBy: walletAddress,
+      completedAt: new Date()
+    })
+    .where(eq(jobs.id, jobId));
+  return true;
+}
+
+// Transaction queries
+export async function createTransaction(transaction: InsertTransaction) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create transaction: database not available");
+    return undefined;
+  }
+  await db.insert(transactions).values(transaction);
+  return true;
+}
+
+export async function getTransactionsByJobId(jobId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get transactions: database not available");
+    return [];
+  }
+  return await db.select().from(transactions).where(eq(transactions.jobId, jobId));
+}
