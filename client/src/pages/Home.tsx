@@ -23,7 +23,7 @@ export default function Home() {
 
   const { data: activeJobs, isLoading: jobsLoading, refetch: refetchJobs } = trpc.jobs.getByStatus.useQuery({ status: "active" });
   const { data: completedJobs, refetch: refetchCompleted } = trpc.jobs.getByStatus.useQuery({ status: "completed" });
-  const { data: walletInfo, isLoading: walletLoading } = trpc.wallet.getAgentWallet.useQuery();
+  const { data: walletInfo, isLoading: walletLoading, refetch: refetchWallet } = trpc.wallet.getAgentWallet.useQuery();
 
   const completeJobMutation = trpc.jobs.complete.useMutation({
     onSuccess: (data) => {
@@ -35,6 +35,8 @@ export default function Home() {
       setSelectedJob(null);
       refetchJobs();
       refetchCompleted();
+      // Refresh wallet balance to show updated amount
+      refetchWallet();
     },
     onError: (error) => {
       toast.error("Payment failed", {

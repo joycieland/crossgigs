@@ -57,3 +57,8 @@
 - [x] Lower job payment amounts to fit within 9.5 USDC budget
 - [x] Update seed script with new payment amounts
 - [x] Verify total payments are under available balance (Total: 9.5 USDC = 2.0 + 2.5 + 1.2 + 2.3 + 1.5)
+
+## UX Improvements
+- [x] Implement dynamic balance refresh after USDC transfer
+- [x] Invalidate wallet query cache to trigger balance update
+- [x] Show updated balance immediately after payment
