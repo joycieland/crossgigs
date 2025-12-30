@@ -52,3 +52,8 @@
 - [x] Test wallet creation with correct credentials
 - [x] Fix staging vs production API URL detection
 - [x] Fix email address validation for wallet owner
+
+## Payment Adjustments
+- [x] Lower job payment amounts to fit within 9.5 USDC budget
+- [x] Update seed script with new payment amounts
+- [x] Verify total payments are under available balance (Total: 9.5 USDC = 2.0 + 2.5 + 1.2 + 2.3 + 1.5)
