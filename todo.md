@@ -67,3 +67,9 @@
 - [x] Make transaction hash clickable in success toast
 - [x] Link to BaseScan explorer (https://sepolia.basescan.org/tx/[hash])
 - [x] Make transaction hash clickable in completed jobs section
+
+## Critical Bugs
+- [x] Fix "Failed to create or get wallet" error preventing page load
+- [x] Debug Crossmint API integration issue
+- [x] Ensure wallet creation works with staging API key
+- [x] Implement GET before POST pattern to avoid duplicate wallet creation errors

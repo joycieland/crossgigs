@@ -47,6 +47,33 @@ interface WalletInfo {
  */
 export async function getOrCreateWallet(email: string): Promise<WalletInfo> {
   try {
+    // First, try to get existing wallet
+    const walletLocator = `email:${email}:evm`;
+    try {
+      const getResponse = await axios.get(
+        `${CROSSMINT_API_URL}/wallets/${encodeURIComponent(walletLocator)}`,
+        {
+          headers: {
+            "X-API-KEY": API_KEY,
+          },
+        }
+      );
+      
+      if (getResponse.data && getResponse.data.address) {
+        return {
+          address: getResponse.data.address,
+          chain: "base-sepolia",
+          publicKey: getResponse.data.publicKey,
+        };
+      }
+    } catch (getError: any) {
+      // Wallet doesn't exist, proceed to create it
+      if (getError.response?.status !== 404) {
+        console.warn("[Crossmint] Error checking existing wallet:", getError.response?.data || getError.message);
+      }
+    }
+
+    // Create new wallet if it doesn't exist
     const response = await axios.post(
       `${CROSSMINT_API_URL}/wallets`,
       {
